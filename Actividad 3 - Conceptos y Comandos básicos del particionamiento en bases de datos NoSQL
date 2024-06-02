@@ -1,0 +1,40 @@
+>cluster=new ShardingTest ({shards: 3, chunksize:1})
+> db = (new Mongo("localhost:20006")).getDB("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín")
+ for (i= 0; i < 500000; i++) {
+db.Deportistas.insert({genero : "Femenino" +i, nombre : "nombre" +i, date: 
+new Date() });
+}
+>db.Deportistas.count() 
+> shard1 = new Mongo("localhost:20000") 
+>shard1DB = shard1.getDB("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín") 
+> shard1DB.Deportistas.count()
+> shard2= new Mongo("localhost:20001")
+>shard2DB = shard2.getDB("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín")
+> shard2DB.Deportistas.count()
+> shard3= new Mongo("localhost:20002")
+>shard3DB = shard3.getDB("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín")
+> shard3DB.Deportistas.count()  
+> shard1 = new Mongo("localhost:20006")
+>sh.status()
+>sh.enableSharding("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín")
+>db.Deportistas.ensureIndex({Deportistas : 1})
+>sh.shardCollection("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín.Deportistas ", { Deportistas: 1})
+> sh.status()
+> sh.getBalancerState()
+ >false
+> sh.setBalancerState(true) 
+ > sh.getBalancerState() 
+>true 
+ >sh.isBalancerRunning() 
+>true
+ > shard1 = new Mongo("localhost:20000")
+>shard1DB = shard1.getDB("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín")
+> shard1DB.Deportistas.count()
+>	shard2 = new Mongo("localhost:20001") 
+>shard2DB = shard1.getDB("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín")
+>	shard2DB.Deportistas.count()
+>	shard3 = new Mongo("localhost:20002") 
+>shard3DB = shard1.getDB("WTA_Masters_1000_Clásico_de_Tenis_Femenino_de_Medellín")
+>	shard3DB.Deportistas.count()
+> cluster.stop()
+>db.adminCommand( { listShards: 1 } )
